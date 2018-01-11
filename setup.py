@@ -22,7 +22,7 @@ setup(
     author_email='richard.mathie@cantab.net',
     description='A python class for using redis, or other key value stores, and caching the values for read heavy workloads',
     long_description=__doc__,
-    modules=['redis_pubsub_dict'],
+    py_modules=['redis_pubsub_dict'],
     platforms='any',
     install_requires=requirements,
     test_suite='tests',

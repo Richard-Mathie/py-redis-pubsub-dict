@@ -1,6 +1,6 @@
 # Redis PubSub Dict
 
-A python class for using redis, or other key value stores, as a dictionary and caching the values locally for read heavy workloads.
+A python class for using redis, or other key value stores, as a dictionary and caching the values locally for read heavy workloads. Heavily inspired by [pylru](https://pypi.python.org/pypi/pylru).
 
 ## Usage
 The idea is that Deleting or Updating keys in an instance of `PubSubRedisDict` or `PubSubCacheManager` will update the matching cached keys in all instances of `PubSubCacheManager`. `PubSubCacheManager` will therefor maintain a cache of recently used keys using an `lru` or just a straight up `dict()`. This will reduce the round trip latency and network overhead for any reads of the cached keys.
@@ -50,9 +50,17 @@ Just like a normal dictionary, but networked. Initialisation wont take a diction
   print dict(redcache.cache)
   ```
 
+### Further uses
+  You can hook up `RedisDict` or `PubSubRedisDict` to `pylru.WriteBackCacheManager` to get a Redis backed dictionary which only writes to Redis on 'flush' or when the item pops off the `lru` for write intensive workloads. However a lot more work would need to be done to add the pubsub mechanism as there difficult cases to consider, such as what happens when the cache is dirty and we get notified that the store key is updated?
 
 ## Limitations
 - all keys are strings.
 - `msgpack` is used to marshal objects to redis, so `msgpack` object limitations apply. Though you can monkey patch the modules `loads` and `dumps` method if you like.
 - publish will publish to all consuming dictionary instances, there is no partitioning, so writes and updates are expensive. You could come up with a partitioning strategy to improve this.
-- The published items eventually end up in the watched cash. There may be a 
+- The published items eventually end up in the watched cash. There may be a time lag between a client publishing a change and the key updating in another clients cache.
+
+## References
+* [redis-py](http://redis-py.readthedocs.io/)
+* [redis-py-cluster](http://redis-py-cluster.readthedocs.io/)
+* [pylru](https://pypi.python.org/pypi/pylru)
+

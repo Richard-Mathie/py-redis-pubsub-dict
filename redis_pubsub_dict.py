@@ -104,6 +104,11 @@ class PubSubRedisDict(RedisDict):
         # publish the delete so it is removed else where
         self.publish('delete', key)
 
+    def close(self):
+        if hasattr(self, 'pubsub'):
+            self.subscriber.stop()
+            self.subscriber.join()
+            self.pubsub.close()
 
 class PubSubCacheManager(WriteThroughCacheManager):
     def __init__(self, store, cache):
@@ -169,9 +174,14 @@ class PubSubCacheManager(WriteThroughCacheManager):
         except KeyError:
             pass
 
+    def close(self):
+        self.store.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def __del__(self):
-        if hasattr(self.store, 'pubsub'):
-            print 'close down'
-            self.subscriber.stop()
-            self.subscriber.join()
-            self.pubsub.close()
+        self.close()

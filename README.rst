@@ -3,6 +3,7 @@ Redis PubSub Dict
 
 A python class for using redis, or other key value stores, as a
 dictionary and caching the values locally for read heavy workloads.
+Heavily inspired by `pylru <https://pypi.python.org/pypi/pylru>`__.
 
 Usage
 -----
@@ -55,6 +56,17 @@ store when it receives a message from the
 ``<namespace>/[update|delete]`` channel.
 ``cache = pylru.lrucache(10) # maybe more than 10   redstore = PubSubRedisDict(rc, 'namespace')   redcache = PubSubCacheManager(redstore, cache)   # ect as before   # see the cache   print dict(redcache.cache)``
 
+Further uses
+~~~~~~~~~~~~
+
+You can hook up ``RedisDict`` or ``PubSubRedisDict`` to
+``pylru.WriteBackCacheManager`` to get a Redis backed dictionary which
+only writes to Redis on 'flush' or when the item pops off the ``lru``
+for write intensive workloads. However a lot more work would need to be
+done to add the pubsub mechanism as there difficult cases to consider,
+such as what happens when the cache is dirty and we get notified that
+the store key is updated?
+
 Limitations
 -----------
 
@@ -66,4 +78,12 @@ Limitations
    no partitioning, so writes and updates are expensive. You could come
    up with a partitioning strategy to improve this.
 -  The published items eventually end up in the watched cash. There may
-   be a
+   be a time lag between a client publishing a change and the key
+   updating in another clients cache.
+
+References
+----------
+
+-  `redis-py <http://redis-py.readthedocs.io/>`__
+-  `redis-py-cluster <http://redis-py-cluster.readthedocs.io/>`__
+-  `pylru <https://pypi.python.org/pypi/pylru>`__
