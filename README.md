@@ -1,4 +1,5 @@
 # Redis PubSub Dict
+[![PyPI version](https://img.shields.io/pypi/v/redis-pubsub-dict.svg)](https://pypi.python.org/pypi/redis-pubsub-dict)
 
 A python class for using redis, or other key value stores, as a dictionary and caching the values locally for read heavy workloads. Heavily inspired by [pylru](https://pypi.python.org/pypi/pylru).
 
