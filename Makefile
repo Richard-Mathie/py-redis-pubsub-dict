@@ -1,4 +1,5 @@
 PATH := ./redis-git/src:${PATH}
+VERSION=`cat Version`
 
 # CLUSTER REDIS NODES
 define NODE1_CONF
@@ -123,7 +124,10 @@ dist: cleanmeta
 	-python setup.py sdist bdist_wheel
 
 package: dist
-	-twine upload dist/redis-pubsub-dict"$(cat Version)".tar.gz
+	-twine upload dist/redis_pubsub_dict-$(VERSION).tar.gz
+
+version:
+	-echo "$(VERSION)"
 
 start: cleanup
 	echo "$$NODE1_CONF" | redis-server -
