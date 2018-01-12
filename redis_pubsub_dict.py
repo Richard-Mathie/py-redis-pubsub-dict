@@ -32,9 +32,9 @@ class RedisDict(object):
 
     def __getitem__(self, key):
         buf = self.redis.get(self.prefixer(key))
-        try:
+        if buf is not None:
             return loads(buf)
-        except TypeError:
+        else:
             raise KeyError
 
     def get(self, key, default=None):
@@ -110,7 +110,12 @@ class PubSubRedisDict(RedisDict):
             self.subscriber.join()
             self.pubsub.close()
 
+
+NoneKey = object()
+
+
 class PubSubCacheManager(WriteThroughCacheManager):
+
     def __init__(self, store, cache):
         self.store = store
 
@@ -146,15 +151,23 @@ class PubSubCacheManager(WriteThroughCacheManager):
         skey = str(key)
         with self.mutex:
             try:
-                return self.cache[skey]
+                cache = self.cache[skey]
             except KeyError:
                 pass
+            else:
+                if cache is NoneKey:
+                    raise KeyError
+                return cache
 
             # It wasn't in the cache. Look it up in the store, add the entry to
             # the cache, and return the value.
-            value = self.store[key]
-            self.cache[skey] = value
-            return value
+            try:
+                value = self.store[key]
+                self.cache[skey] = value
+                return value
+            except KeyError:
+                self.cache[skey] = NoneKey
+                raise KeyError
 
     def __setitem__(self, key, value):
         # Add the key/value pair to the cache and store.
