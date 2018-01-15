@@ -11,6 +11,9 @@ with open('README.rst') as f:
 with open('requirements.txt') as f:
     requirements = [r for r in f]
 
+with open('requirements_test.txt') as f:
+    requirements_test = [r for r in f]
+
 __doc__ = readme
 
 setup(
@@ -23,9 +26,10 @@ setup(
     description='A python class for using redis, or other key value stores, and caching the values for read heavy workloads',
     long_description=__doc__,
     py_modules=['redis_pubsub_dict'],
-    platforms='any',
     install_requires=requirements,
-    test_suite='tests',
+    tests_require=requirements_test,
+    test_suite='nose2.collector.collector',
+    platforms='any',
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',

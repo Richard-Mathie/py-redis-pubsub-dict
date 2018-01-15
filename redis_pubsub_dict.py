@@ -93,7 +93,7 @@ class PubSubRedisDict(RedisDict):
         return handeler
 
     def publish(self, action, key):
-        self.redis.publish(self.prefixer(action), key)
+        self.redis.publish(self.prefixer(action), str(key))
 
     def __setitem__(self, key, value):
         self.redis.set(self.prefixer(key), dumps(value))

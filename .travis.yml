@@ -8,14 +8,10 @@ python:
 - pypy-5.3.1
 
 install:
-- pip install -r requirements.txt
-- pip install -e .
 - pip install codeclimate-test-reporter
 - pip install coverage
-- make travis-install
 
 script:
-- make start
-- nosetests -v --with-coverage --cover-tests 
-- make stop
+- make travis-run
+# - nosetests -v --with-coverage --cover-tests
 
