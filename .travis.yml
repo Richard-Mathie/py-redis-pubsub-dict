@@ -1,13 +1,11 @@
-services:
-- redis-server
-
 language: python
 
 python:
 - "2.7"
-- pypy-5.3.1
+- "pypy"
 
 install:
+- pip install -r requirements.txt
 - pip install codeclimate-test-reporter
 - pip install coverage
 
