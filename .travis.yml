@@ -5,6 +5,7 @@ python:
 - "pypy"
 
 install:
+- pip install -r requirements.txt
 - pip install codeclimate-test-reporter
 - pip install coverage
 
