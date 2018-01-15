@@ -60,8 +60,10 @@ class PubSub2CacheTests(BaseRedisTests):
                 cache[i] = obj
 
     def wait_till_empty(self):
-        for rd in self.rd:
-            rd.store.pubsub.wait()
+        for i in range(2):
+            sleep(0.1)
+            for rd in self.rd:
+                rd.store.pubsub.wait()
 
     def test_set(self):
         self.spam_set(self.rd[0])
@@ -82,7 +84,6 @@ class PubSub2CacheTests(BaseRedisTests):
 
     def tearDown(self):
         # Clear data in fakeredis.
-        self.wait_till_empty()
         self.wait_till_empty()
         for rd in self.rd:
             sleep(0.2)

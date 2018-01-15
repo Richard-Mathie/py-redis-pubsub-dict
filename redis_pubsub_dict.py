@@ -106,9 +106,9 @@ class PubSubRedisDict(RedisDict):
 
     def close(self):
         if hasattr(self, 'pubsub'):
+            self.pubsub.close()
             self.subscriber.stop()
             self.subscriber.join()
-            self.pubsub.close()
 
 
 NoneKey = object()
